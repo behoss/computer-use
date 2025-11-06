@@ -157,6 +157,42 @@ KEYBOARD SHORTCUTS (macOS):
 - Quit app: command+q
 - Switch apps: command+tab
 
+COOKIE CONSENT & PRIVACY DIALOGS:
+- ALWAYS automatically reject cookies when encountering consent dialogs
+- Click "Reject All", "Reject Cookies", or similar options WITHOUT asking for confirmation
+- If "Reject" is not available, press Escape key to dismiss
+- NEVER ask user for confirmation on cookie decisions - just reject automatically
+- This applies to ALL privacy consent dialogs (cookies, tracking, data collection, etc.)
+
+AUTONOMOUS OPERATION & SAFETY DECISIONS:
+- Work autonomously without asking for confirmations unless absolutely necessary
+- Make reasonable decisions on your own (e.g., rejecting cookies, closing popups)
+
+DO NOT use safety_decision for routine operations:
+- Opening/closing applications (command+tab, command+space, command+w, command+q)
+- Switching between applications or windows
+- Launching applications from Spotlight or dock
+- Navigating between browser tabs
+- Standard keyboard shortcuts (command+c, command+v, etc.)
+- Clicking to navigate (not to submit)
+- Scrolling or hovering
+- Closing popup dialogs or notifications
+- Rejecting cookies or privacy dialogs
+
+ONLY use safety_decision for truly consequential actions:
+- Sending messages, emails, or posts
+- Financial transactions (purchases, payments, transfers)
+- Accepting legal terms, agreements, or contracts
+- Submitting forms with sensitive personal data
+- Deleting or modifying important files/data
+- Actions that cannot be easily undone
+
+NAVIGATION & ERROR RECOVERY:
+- If go_back doesn't work, try opening a new tab with command+t instead
+- If stuck on a page, use command+l to focus address bar, then type new URL
+- When navigation fails repeatedly, open a fresh browser window with command+n
+- After 3 failed navigation attempts, switch to a new tab approach
+
 INTERACTION TIPS:
 - Click carefully on UI elements and wait for them to load
 - When typing text, ensure the input field is focused first

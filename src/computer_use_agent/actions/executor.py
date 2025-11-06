@@ -180,8 +180,18 @@ class ActionExecutor:
             pyautogui.press("backspace")
             time.sleep(0.1)
 
-        # Type text
-        pyautogui.write(text, interval=0.05)
+        # Type text - handle newlines with Shift+Enter to avoid sending in chat apps
+        # Split by newlines and type each line, using Shift+Enter between them
+        lines = text.split("\n")
+        for i, line in enumerate(lines):
+            if line:  # Only type non-empty lines
+                pyautogui.write(line, interval=0.05)
+            # Add newline between lines (but not after the last line)
+            if i < len(lines) - 1:
+                time.sleep(0.05)
+                pyautogui.hotkey("shift", "enter")
+                time.sleep(0.05)
+
         if press_enter:
             time.sleep(0.1)
             pyautogui.press("enter")
@@ -224,10 +234,10 @@ class ActionExecutor:
         direction = args.get("direction", "down")
         magnitude = args.get("magnitude", 300)
 
-        # AUTO-DOUBLE MAGNITUDE: Make scrolling 2x more aggressive
-        # LLM tends to be conservative with scroll amounts, so we double it
+        # AUTO-QUADRUPLE MAGNITUDE: Make scrolling 4x more aggressive
+        # LLM tends to be conservative with scroll amounts, so we quadruple it
         # to ensure sufficient coverage when reading all messages in a channel
-        magnitude = magnitude * 2
+        magnitude = magnitude * 4
 
         # macOS has a practical maximum of ~5 clicks per scroll call
         # For larger scrolls, use multiple scroll operations
@@ -271,10 +281,10 @@ class ActionExecutor:
         direction = args.get("direction", "down")
         magnitude = args.get("magnitude", 800)
 
-        # AUTO-DOUBLE MAGNITUDE: Make scrolling 2x more aggressive
-        # LLM tends to be conservative with scroll amounts, so we double it
+        # AUTO-QUADRUPLE MAGNITUDE: Make scrolling 4x more aggressive
+        # LLM tends to be conservative with scroll amounts, so we quadruple it
         # to ensure sufficient coverage when reading all messages in a channel
-        magnitude = magnitude * 2
+        magnitude = magnitude * 4
 
         # macOS has a practical maximum of ~5 clicks per scroll call
         # For larger scrolls, use multiple scroll operations
@@ -365,12 +375,61 @@ class ActionExecutor:
 def get_safety_confirmation(safety_decision: Dict[str, Any]) -> str:
     """Prompt user for confirmation when safety check is triggered.
 
+    Implements intelligent auto-approval for routine operations while
+    requiring user confirmation for consequential actions.
+
     Args:
         safety_decision: Safety decision dictionary from model
 
     Returns:
         "CONTINUE" or "TERMINATE"
     """
+    import subprocess
+
+    def play_sound(sound_name: str) -> None:
+        """Play a macOS system sound."""
+        try:
+            sound_path = f"/System/Library/Sounds/{sound_name}.aiff"
+            subprocess.Popen(
+                ["afplay", sound_path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            pass
+
+    explanation = safety_decision.get("explanation", "").lower()
+
+    # AUTO-APPROVE: Routine operations that are safe
+    routine_keywords = [
+        "switching",
+        "opening",
+        "launching",
+        "navigating to",
+        "keyboard shortcut",
+        "command+",
+        "closing",
+        "minimizing",
+        "switching to",
+        "open the",
+        "launch",
+        "navigate to",
+        "switch to",
+        "close",
+        "minimize",
+        "maximize",
+    ]
+
+    # Check for routine operations - auto-approve without sound
+    if any(keyword in explanation for keyword in routine_keywords):
+        print(
+            f"🟢 Auto-approved routine action: {safety_decision.get('explanation', '')}"
+        )
+        return "CONTINUE"
+
+    # For all other cases, play alert sound and ask user
+    play_sound("Sosumi")  # Distinctive alert sound
+
     termcolor.cprint("\n⚠️  Safety service requires explicit confirmation!", color="red")
     print(
         f"Explanation: {safety_decision.get('explanation', 'No explanation provided')}"

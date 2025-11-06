@@ -29,11 +29,11 @@ class AgentConfig:
     goal: str
     app_name: str = "Desktop Application"
     app_instructions: str = ""
-    max_iterations: int = 20
+    max_iterations: int = 40
     verbose: bool = True
     save_progress: bool = True
     enable_thinking: bool = False
-    include_safety_instructions: bool = True
+    include_safety_instructions: bool = False
     model_name: str = "gemini-2.5-computer-use-preview-10-2025"
     temperature: float = 0.1
     excluded_functions: List[str] = field(

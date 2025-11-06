@@ -53,8 +53,8 @@ Examples:
     parser.add_argument(
         "--max-iterations",
         type=int,
-        default=20,
-        help="Maximum number of steps (default: 20)",
+        default=40,
+        help="Maximum number of steps (default: 40)",
     )
     parser.add_argument("--quiet", action="store_true", help="Reduce output verbosity")
     parser.add_argument(
@@ -63,9 +63,9 @@ Examples:
         help="Enable thinking mode for debugging",
     )
     parser.add_argument(
-        "--no-safety",
+        "--safety",
         action="store_true",
-        help="Disable safety instructions (not recommended)",
+        help="Enable safety instructions (off by default)",
     )
 
     args = parser.parse_args()
@@ -92,7 +92,7 @@ Examples:
         max_iterations=args.max_iterations,
         verbose=not args.quiet,
         enable_thinking=args.thinking,
-        include_safety_instructions=not args.no_safety,
+        include_safety_instructions=args.safety,
     )
 
     try:
