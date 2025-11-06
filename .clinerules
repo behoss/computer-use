@@ -1,0 +1,163 @@
+# Cline Rules
+
+## Project Structure
+
+This is a production-ready Python package using best practices architecture:
+
+```
+computer-use/
+├── src/computer_use_agent/     # Main package
+│   ├── actions/                # Action execution layer
+│   ├── config/                 # Configuration & prompts
+│   ├── utils/                  # Utilities (retry, response handling)
+│   ├── agent.py                # Core orchestrator
+│   └── cli.py                  # CLI interface
+├── autonomous_agent.py         # Legacy PoC (maintained for compatibility)
+├── pyproject.toml              # Project metadata & dependencies
+└── README.md                   # Documentation
+```
+
+## Package Management
+
+When adding or updating Python packages:
+1. ALWAYS research online to verify you're using the LATEST stable versions from PyPI
+2. Check PyPI.org for each package to confirm the latest version
+3. Use `uv add <package>` to add packages (uv automatically gets the latest version)
+4. After adding packages, verify in pyproject.toml that versions are current
+5. Example workflow:
+   - Check https://pypi.org/project/<package-name>/ for latest version
+   - Run `uv add <package>` to install latest
+   - Verify version in pyproject.toml matches PyPI
+
+This ensures dependencies are up-to-date and secure.
+
+## Code Quality Standards
+
+### Architecture Principles
+- **Separation of Concerns**: Each module has a single, well-defined responsibility
+- **Dependency Injection**: Components receive dependencies rather than creating them
+- **Configuration Management**: Use dataclasses for type-safe configuration
+- **Error Handling**: Comprehensive error handling with informative messages
+- **Type Safety**: Full type hints throughout the codebase
+
+### Code Style
+- **Type Hints**: All functions must have parameter and return type hints
+- **Docstrings**: All public classes and functions must have one-line docstrings
+- **Naming**: Use descriptive names (e.g., `screen_manager` not `sm`)
+- **Line Length**: Max 88 characters (Black default)
+- **Imports**: Group by stdlib, third-party, local (use isort)
+- **Simplicity**: Keep code simple and straightforward - avoid over-engineering
+- **Modern Python**: Use latest Python features (3.10+: match/case, type unions with |, etc.)
+- **Leverage Libraries**: Use well-established libraries instead of custom implementations where they add value
+- **Pylance Errors**: All Pylance errors must be addressed before finishing a task
+
+### Testing Approach
+- Each module should be independently testable
+- Use dependency injection to facilitate mocking
+- Configuration should be passed in, not read from environment
+- **Environment Variables**: Always load from .env file using `python-dotenv` at entry points (CLI, main scripts)
+
+### Logging
+- Use Python's `logging` module
+- Log at appropriate levels (DEBUG, INFO, WARNING, ERROR)
+- Include context in log messages
+
+## Development Workflow
+
+### Debugging and Testing
+**When stuck or testing functionality in isolation:**
+- Create test scripts in `scripts/` folder
+- Use these to assess how things work by inspecting logs
+- Test individual components before integrating
+- Keep scripts for future reference
+
+### Major Changes and Refactoring
+**IMPORTANT: Before any rearchitecting or major structural changes:**
+1. Consult with the user first
+2. Present multiple options with pros/cons
+3. Get explicit approval before proceeding
+4. Major changes include: moving files, changing architecture, large refactors
+
+### Adding New Features
+1. Identify which layer the feature belongs to (actions/config/utils/core)
+2. Create or modify the appropriate module
+3. Update type hints and docstrings
+4. Update CLI if needed
+
+### Modifying Existing Code
+1. Check which module owns the functionality
+2. Make changes following single responsibility principle
+3. Update dependent modules if interfaces change
+4. Verify type hints still match
+
+### Package Updates
+1. Always check PyPI for latest stable versions
+2. Use `uv add package` for automatic latest version
+3. Test after updates to ensure compatibility
+4. Update version in pyproject.toml if making a release
+
+## File Organization Rules
+
+### Config Layer (`src/computer_use_agent/config/`)
+- `settings.py`: Configuration dataclasses
+- `prompts.py`: System prompts and instructions
+- No business logic, only configuration
+
+### Actions Layer (`src/computer_use_agent/actions/`)
+- `executor.py`: Action execution logic
+- `screen.py`: Screen/coordinate management
+- Each action handler is a private method
+- No direct API calls, only desktop automation
+
+### Utils Layer (`src/computer_use_agent/utils/`)
+- `response_handler.py`: Response processing utilities
+- `retry.py`: Retry logic with exponential backoff
+- Pure functions where possible
+- No application state
+
+### Core Layer
+- `agent.py`: Main orchestrator, coordinates all components
+- `cli.py`: Command-line interface only
+- Minimal business logic in CLI
+
+## Import Rules
+
+- Use absolute imports within package: `from .config import AgentConfig`
+- Keep imports organized: stdlib → third-party → local
+- Avoid circular dependencies
+- Use `__init__.py` to expose public API
+
+## Documentation
+
+**IMPORTANT: Do NOT add documentation (README, guides, tutorials, etc.) unless explicitly requested by the user.**
+
+When documentation is requested:
+- Keep it minimalistic, functional, and no fluff
+- Focus on what's needed, not what's nice to have
+- Code examples over explanations
+- No marketing language or excessive descriptions
+
+Docstrings:
+- One-line docstrings for all public functions/classes
+- Explain what it does, parameters, return values, exceptions
+- Keep concise and technical
+- Focus on code over documentation
+
+## Research and Verification
+
+**ALWAYS search online before implementing features or using APIs:**
+1. Search for the latest official documentation
+2. Verify API methods, parameters, and best practices
+3. Check for deprecations or breaking changes
+4. Use the most recent stable versions
+5. Example workflow:
+   - Search: "Gemini Computer Use API latest documentation"
+   - Verify: Official docs at ai.google.dev or github.com
+   - Implement: Using verified patterns and methods
+
+## Version Control
+
+- Keep `autonomous_agent.py` for backward compatibility
+- Mark deprecated code with warnings
+- Use semantic versioning (MAJOR.MINOR.PATCH)
+- Update CHANGELOG for significant changes
