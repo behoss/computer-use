@@ -66,6 +66,8 @@ SLACK_INSTRUCTIONS = """
 SLACK-SPECIFIC FEATURES:
 - Slack is a desktop application (not a web browser)
 - Do NOT try to open a web browser or navigate to URLs
+- IMPORTANT: Slack is ALREADY OPEN and FOCUSED - do NOT use command+tab to switch apps
+- Only use command+tab if you explicitly need to switch TO Slack from another app
 
 SLACK KEYBOARD SHORTCUTS (macOS):
 - Search/jump to channel or person: command+k
@@ -73,6 +75,8 @@ SLACK KEYBOARD SHORTCUTS (macOS):
 - Search within current channel/DM: command+f
 - All unreads: command+shift+a
 - Threads: command+shift+t
+- Arrow keys: Navigate search results
+- Enter/Return: Select highlighted result
 
 SLACK SEARCH QUERY LANGUAGE:
 - Use command+k to open quick switcher for channels/people
@@ -85,17 +89,52 @@ SLACK SEARCH QUERY LANGUAGE:
     - "from:@john in:#general after:2025-01-01 has:link" - Links from John in #general after Jan 1
     - "security bug in:#engineering on:2025-01-15" - Messages about security bug on specific date
 
-HOW TO NAVIGATE IN SLACK:
-1. Use command+k to open search/switcher
-2. Type channel name (e.g., #general) or person's name
-3. Click or press Enter to navigate
+HOW TO NAVIGATE IN SLACK (KEYBOARD-FIRST):
+1. Press command+k to open search/switcher
+2. IMPORTANT: Search bar is AUTO-FOCUSED after command+k - NO NEED to click on it
+3. Simply type channel name (e.g., "#general") or person's name
+4. Use arrow keys to navigate results
+5. Press Enter to select
+6. AVOID clicking with mouse - use keyboard for safer navigation
 
-READING MESSAGES:
-- To review messages from a time period (e.g., "today"):
-  1. Scroll UP to find the start of the time period
-  2. Look for date separators (e.g., "Today", "Yesterday")
-  3. Scroll DOWN slowly to capture all messages
-  4. Keep mental notes of important information
+READING MESSAGES (READ-ONLY MODE):
+CRITICAL: When gathering information by scrolling, use READ-ONLY mode:
+- ONLY scroll to read messages
+- Do NOT click on any links, images, or attachments
+- Do NOT click on user names or channels
+- Do NOT interact with any UI elements except scrolling
+- Your ONLY actions should be: scroll up, scroll down, read visible content
+
+AGGRESSIVE SCROLLING STRATEGY for gathering ALL messages:
+When asked to read/summarize ALL messages from a time period:
+
+1. SCROLL UP PHASE - Find the target marker (e.g., "Yesterday"):
+   - Use VERY LARGE scrolls: magnitude 1500-2000 (15-20 clicks)
+   - ONLY scroll UP - do NOT scroll down during this phase
+   - Keep scrolling UP repeatedly until you see the target marker
+   - If marker not found after 5 scrolls, INCREASE to magnitude 2000
+   - NEVER reduce magnitude or scroll back down
+   - Once you see the marker, STOP scrolling up immediately
+
+2. SCROLL DOWN PHASE - Read all messages:
+   - Start ONLY after you've found the marker in step 1
+   - Use VERY LARGE scrolls: magnitude 1500-2000 (15-20 clicks)
+   - Keep scrolling DOWN until "You're all caught up" appears
+   - NEVER reduce magnitude - stay at 1500-2000 throughout
+   - Read and note messages as you scroll down
+
+3. MAGNITUDE USAGE RULES:
+   - 1500-2000: For full channel scrolling (DEFAULT for "read all" tasks)
+   - 800-1000: Only if channel has very few messages
+   - 300-500: Only for fine positioning (NOT for full channel reading)
+   - 100-200: Never use for full channel tasks
+   - CRITICAL: NEVER decrease magnitude mid-scroll
+
+4. STRICT TWO-PHASE PROCESS:
+   - Phase 1: ONLY UP until marker found
+   - Phase 2: ONLY DOWN until caught up
+   - Do NOT mix directions or scroll back
+   - Do NOT click anything while scrolling
 """
 
 # Generic macOS instructions

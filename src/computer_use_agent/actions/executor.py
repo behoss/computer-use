@@ -146,7 +146,14 @@ class ActionExecutor:
             args.get("x", 0), args.get("y", 0)
         )
         print(f"     Clicking at ({actual_x}, {actual_y})")
-        pyautogui.click(actual_x, actual_y)
+
+        # Animated mouse movement for visibility (0.3s)
+        pyautogui.moveTo(actual_x, actual_y, duration=0.3)
+        time.sleep(0.1)  # Brief pause at target
+
+        pyautogui.click()
+        time.sleep(0.3)  # Post-click delay for UI to respond and focus to settle
+
         return {"status": "success"}
 
     def _type_text_at(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -158,9 +165,13 @@ class ActionExecutor:
         press_enter = args.get("press_enter", False)
         clear_before = args.get("clear_before_typing", False)
 
+        # Animated mouse movement to click position
+        pyautogui.moveTo(actual_x, actual_y, duration=0.3)
+        time.sleep(0.1)
+
         # Click to focus
-        pyautogui.click(actual_x, actual_y)
-        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)  # Wait for focus to settle
 
         if clear_before:
             # Clear field on macOS
@@ -174,6 +185,7 @@ class ActionExecutor:
         if press_enter:
             time.sleep(0.1)
             pyautogui.press("enter")
+            time.sleep(0.3)  # Wait for enter to be processed
 
         return {"status": "success"}
 
@@ -200,27 +212,56 @@ class ActionExecutor:
         # Use interval parameter for macOS to ensure modifier keys register
         if platform.system() == "Darwin":
             pyautogui.hotkey(*keys, interval=0.25)
+            time.sleep(0.5)  # Post-hotkey delay for UI to respond (e.g., command+k)
         else:
             pyautogui.hotkey(*keys)
+            time.sleep(0.3)
 
         return {"status": "success"}
 
     def _scroll_document(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Execute scroll_document action."""
         direction = args.get("direction", "down")
-        # macOS scroll direction - positive scrolls UP, negative scrolls DOWN
-        scroll_amount = -300 if direction == "down" else 300
+        magnitude = args.get("magnitude", 300)
 
-        # Ensure window has focus by clicking in the center first
+        # AUTO-DOUBLE MAGNITUDE: Make scrolling 2x more aggressive
+        # LLM tends to be conservative with scroll amounts, so we double it
+        # to ensure sufficient coverage when reading all messages in a channel
+        magnitude = magnitude * 2
+
+        # macOS has a practical maximum of ~5 clicks per scroll call
+        # For larger scrolls, use multiple scroll operations
+        total_clicks = max(1, int(magnitude / 100))
+        max_per_scroll = 5
+        num_scrolls = (
+            total_clicks + max_per_scroll - 1
+        ) // max_per_scroll  # Ceiling division
+
+        # Move to center WITHOUT clicking to avoid triggering UI elements
+        # Window should already have focus from prior actions
         center_x, center_y = self.screen.get_center()
-        pyautogui.click(center_x, center_y)
+        pyautogui.moveTo(center_x, center_y, duration=0.2)
+        time.sleep(0.1)
+
+        # Perform multiple scrolls if needed
+        # macOS requires 0.5s delay between consecutive scrolls to work reliably
+        total_scrolled = 0
+        for i in range(num_scrolls):
+            remaining = total_clicks - total_scrolled
+            scroll_clicks = min(max_per_scroll, remaining)
+
+            # PyAutoGUI: positive scrolls UP, negative scrolls DOWN
+            scroll_amount = -scroll_clicks if direction == "down" else scroll_clicks
+            pyautogui.scroll(scroll_amount)
+            total_scrolled += scroll_clicks
+
+            if i < num_scrolls - 1:  # Don't sleep after last scroll
+                time.sleep(0.5)  # macOS needs 0.5s between scrolls
+
         time.sleep(0.3)
-
-        # Perform the scroll
-        pyautogui.scroll(scroll_amount)
-        time.sleep(0.5)
-
-        print(f"     Scrolled {direction} (amount: {scroll_amount})")
+        print(
+            f"     Scrolled {direction} by {total_scrolled} clicks ({num_scrolls} operations)"
+        )
         return {"status": "success"}
 
     def _scroll_at(self, args: Dict[str, Any]) -> Dict[str, Any]:
@@ -230,22 +271,42 @@ class ActionExecutor:
         direction = args.get("direction", "down")
         magnitude = args.get("magnitude", 800)
 
-        # Calculate scroll amount based on direction and magnitude
-        scroll_amount = (
-            self.screen.denormalize_y(magnitude)
-            if direction in ["up", "down"]
-            else self.screen.denormalize_x(magnitude)
-        )
-        if direction in ["down", "right"]:
-            scroll_amount = -scroll_amount
+        # AUTO-DOUBLE MAGNITUDE: Make scrolling 2x more aggressive
+        # LLM tends to be conservative with scroll amounts, so we double it
+        # to ensure sufficient coverage when reading all messages in a channel
+        magnitude = magnitude * 2
 
-        # Click at position to focus
-        pyautogui.click(actual_x, actual_y)
+        # macOS has a practical maximum of ~5 clicks per scroll call
+        # For larger scrolls, use multiple scroll operations
+        total_clicks = max(1, int(magnitude / 100))
+        max_per_scroll = 5
+        num_scrolls = (
+            total_clicks + max_per_scroll - 1
+        ) // max_per_scroll  # Ceiling division
+
+        # Move mouse to position WITHOUT clicking to avoid triggering links/images
+        # The window should already have focus from previous actions
+        pyautogui.moveTo(actual_x, actual_y, duration=0.2)
+        time.sleep(0.1)
+
+        # Perform multiple scrolls if needed
+        # macOS requires 0.5s delay between consecutive scrolls to work reliably
+        total_scrolled = 0
+        for i in range(num_scrolls):
+            remaining = total_clicks - total_scrolled
+            scroll_clicks = min(max_per_scroll, remaining)
+
+            # PyAutoGUI: positive scrolls UP, negative scrolls DOWN
+            scroll_amount = -scroll_clicks if direction == "down" else scroll_clicks
+            pyautogui.scroll(scroll_amount)
+            total_scrolled += scroll_clicks
+
+            if i < num_scrolls - 1:  # Don't sleep after last scroll
+                time.sleep(0.5)  # macOS needs 0.5s between scrolls
+
         time.sleep(0.3)
-
-        pyautogui.scroll(scroll_amount)
         print(
-            f"     Scrolled {direction} at ({actual_x}, {actual_y}), magnitude: {magnitude}"
+            f"     Scrolled {direction} at ({actual_x}, {actual_y}) by {total_scrolled} clicks ({num_scrolls} operations)"
         )
         return {"status": "success"}
 
@@ -254,7 +315,9 @@ class ActionExecutor:
         actual_x, actual_y = self.screen.denormalize_coords(
             args.get("x", 0), args.get("y", 0)
         )
-        pyautogui.moveTo(actual_x, actual_y)
+        # Animated mouse movement for visibility
+        pyautogui.moveTo(actual_x, actual_y, duration=0.3)
+        time.sleep(0.2)  # Brief pause to allow hover effects to appear
         print(f"     Hovering at ({actual_x}, {actual_y})")
         return {"status": "success"}
 

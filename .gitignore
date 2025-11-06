@@ -46,6 +46,7 @@ env/
 .agent_progress.txt
 *.log
 scripts/
+logs/
 
 # uv
 .uv/

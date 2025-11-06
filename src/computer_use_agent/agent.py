@@ -3,6 +3,7 @@
 import os
 import time
 import logging
+import subprocess
 from pathlib import Path
 from typing import Optional
 from google import genai
@@ -17,6 +18,7 @@ from .config import (
 from .actions import ActionExecutor, ScreenManager
 from .actions.executor import get_safety_confirmation
 from .utils import ResponseHandler, RetryableAPICall
+from .utils.llm_logger import LLMLogger
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +50,26 @@ class ComputerUseAgent:
         self.screen = ScreenManager(width, height)
         self.executor = ActionExecutor(self.screen, verbose=config.verbose)
         self.response_handler = ResponseHandler(self.screen)
+        self.llm_logger = LLMLogger()
+
+    def _play_sound(self, sound_name: str) -> None:
+        """Play a system sound on macOS.
+
+        Args:
+            sound_name: Name of the sound file (e.g., 'Ping', 'Glass')
+        """
+        try:
+            # macOS system sounds are in /System/Library/Sounds/
+            sound_path = f"/System/Library/Sounds/{sound_name}.aiff"
+            # Play sound in background without blocking
+            subprocess.Popen(
+                ["afplay", sound_path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            # Silently fail if sound can't be played
+            pass
 
     def run(self) -> bool:
         """Run the agent to accomplish the goal.
@@ -58,6 +80,7 @@ class ComputerUseAgent:
         print(f"\n{'=' * 60}")
         print(f"🎯 GOAL: {self.config.goal}")
         print(f"📱 APP: {self.config.app_name}")
+        print(f"📋 LLM LOG: {self.llm_logger.get_log_path()}")
         print(f"{'=' * 60}\n")
 
         # Build configuration
@@ -95,6 +118,9 @@ class ComputerUseAgent:
 
         # Agent loop
         for iteration in range(self.config.max_iterations):
+            # Play step sound notification (quick "Tink" sound)
+            self._play_sound("Tink")
+
             print(f"\n{'=' * 40}")
             print(f"📍 STEP {iteration + 1}/{self.config.max_iterations}")
             print(f"{'=' * 40}")
@@ -131,16 +157,12 @@ class ComputerUseAgent:
                 print("❌ Agent terminated due to safety decision")
                 break
 
-            # Create function responses with intelligent screenshot management
-            include_screenshot = not any(
-                name in ["scroll_document", "scroll_at"] and iteration > 3
-                for name, _ in results
-            )
-
-            if not include_screenshot:
-                print("📝 Preserving context (no screenshot for scroll)")
-            else:
-                print("📸 Capturing new state...")
+            # ALWAYS TAKE SCREENSHOTS: Critical for accuracy
+            # Previously we skipped screenshots during scrolls to save tokens,
+            # but this caused the LLM to hallucinate message content it couldn't see.
+            # Accuracy is more important than token optimization.
+            include_screenshot = True
+            print("📸 Capturing new state...")
 
             function_responses = self.response_handler.create_function_responses(
                 results, iteration, include_screenshot, app_url
@@ -163,6 +185,9 @@ class ComputerUseAgent:
         print(f"\n{'=' * 60}")
         print("✅ AGENT TASK COMPLETED")
         print(f"{'=' * 60}")
+
+        # Play completion sound (distinct "Glass" sound)
+        self._play_sound("Glass")
 
         # Clean up progress file on success
         if self.config.save_progress and self.config.progress_file.exists():
@@ -247,12 +272,47 @@ class ComputerUseAgent:
 
         for retry in range(retry_helper.max_retries):
             try:
-                return self.client.models.generate_content(
+                # Log request
+                prompt_text = (
+                    f"System: {config.system_instruction}\n\nStep {iteration + 1}"
+                )
+                self.llm_logger.log_request(iteration + 1, prompt_text, image_data=True)
+
+                # Call API
+                response = self.client.models.generate_content(
                     model=self.config.model_name,
                     contents=contents,
                     config=config,
                 )
+
+                # Log response
+                if response and response.candidates:
+                    candidate = response.candidates[0]
+                    response_text = (
+                        self.response_handler.extract_text_response(candidate) or ""
+                    )
+                    function_calls = []
+                    if candidate.content and candidate.content.parts:
+                        for part in candidate.content.parts:
+                            if hasattr(part, "function_call") and part.function_call:
+                                function_calls.append(
+                                    {
+                                        "name": part.function_call.name,
+                                        "args": (
+                                            dict(part.function_call.args)
+                                            if part.function_call.args
+                                            else {}
+                                        ),
+                                    }
+                                )
+                    self.llm_logger.log_response(
+                        iteration + 1, response_text, function_calls
+                    )
+
+                return response
+
             except Exception as e:
+                self.llm_logger.log_error(iteration + 1, str(e))
                 if retry < retry_helper.max_retries - 1 and retry_helper.should_retry(
                     e
                 ):
