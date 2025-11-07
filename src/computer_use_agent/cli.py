@@ -69,9 +69,9 @@ Examples:
         help="⚠️  YOLO MODE: Auto-approve ALL actions without confirmation (use at your own risk!)",
     )
     parser.add_argument(
-        "--rewrite-goal",
+        "--no-rewrite",
         action="store_true",
-        help="Use Gemini 2.5 Flash to automatically rewrite the goal for better results",
+        help="Skip automatic goal rewriting (rewriting is enabled by default)",
     )
 
     args = parser.parse_args()
@@ -90,29 +90,16 @@ Examples:
     if args.app.lower() == "slack" and not args.instructions:
         app_instructions = SLACK_INSTRUCTIONS
 
-    # Rewrite goal if requested
+    # Rewrite goal by default (unless --no-rewrite is specified)
     final_goal = args.goal
     original_goal = ""
-    if args.rewrite_goal:
+    if not args.no_rewrite:
         print("\n🔄 Rewriting goal with Gemini 2.5 Flash...")
         print(f"📝 Original: {args.goal}")
         rewritten = rewrite_goal(args.goal, args.app)
-
-        # Handle multi-part goals (split by |)
-        if " | " in rewritten:
-            goals = [g.strip() for g in rewritten.split(" | ")]
-            print(f"\n✨ Rewritten into {len(goals)} parts:")
-            for i, goal in enumerate(goals, 1):
-                print(f"   Part {i}: {goal}")
-            final_goal = goals[0]  # Use first part
-            original_goal = args.goal  # Save original
-            print(f"\n▶️  Executing Part 1: {final_goal}")
-            if len(goals) > 1:
-                print(f"   (Part 2 will need to be run separately)")
-        else:
-            print(f"✨ Rewritten: {rewritten}\n")
-            final_goal = rewritten
-            original_goal = args.goal  # Save original
+        print(f"✨ Rewritten: {rewritten}\n")
+        final_goal = rewritten
+        original_goal = args.goal
 
     # Show YOLO mode warning if enabled
     if args.yolo_mode:

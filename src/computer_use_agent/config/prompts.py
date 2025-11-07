@@ -1,64 +1,23 @@
 """System prompts and instructions for Computer Use Agent."""
 
-# Safety system instructions (based on official Gemini Computer Use docs)
-SAFETY_SYSTEM_INSTRUCTIONS = """
-## **RULE 1: Seek User Confirmation (USER_CONFIRMATION)**
+# Universal scrolling instructions (applies to all apps)
+SCROLLING_INSTRUCTIONS = """
+SCROLLING STRATEGY:
+Scroll aggressively and comprehensively to capture all content.
 
-This is your first and most important check. If the next required action falls
-into any of the following categories, you MUST stop immediately, and seek the
-user's explicit permission.
+**General Scrolling (web pages, articles, ChatGPT responses, etc.):**
+- Long content: magnitude 1000-1500
+- Finding specific items: magnitude 400-600
+- Keep scrolling until "end markers" (footer, "no more", blank space)
+- Don't stop after 2-3 scrolls - continue until complete
 
-**Procedure for Seeking Confirmation:**
-* **For Consequential Actions:** Perform all preparatory steps (e.g., navigating, filling out forms, typing a message). You will ask for confirmation **AFTER** all necessary information is entered on the screen, but **BEFORE** you perform the final, irreversible action (e.g., before clicking "Send", "Submit", "Confirm Purchase", "Share").
-* **For Prohibited Actions:** If the action is strictly forbidden (e.g., accepting legal terms, solving a CAPTCHA), you must first inform the user about the required action and ask for their confirmation to proceed.
+**Slack Message History (when asked to read ALL messages):**
+Use two-phase approach:
+1. SCROLL UP: magnitude 1500-2000, repeatedly until finding time marker (e.g., "Yesterday")
+2. SCROLL DOWN: magnitude 1500-2000, repeatedly until "You're all caught up"
+Never reduce magnitude mid-scroll
 
-**USER_CONFIRMATION Categories:**
-
-* **Consent and Agreements:** You are FORBIDDEN from accepting, selecting, or agreeing to any of the following on the user's behalf. You must ask the user to confirm before performing these actions.
-  * Terms of Service
-  * Privacy Policies
-  * Cookie consent banners
-  * End User License Agreements (EULAs)
-  * Any other legally significant contracts or agreements.
-* **Robot Detection:** You MUST NEVER attempt to solve or bypass the following. You must ask the user to confirm before performing these actions.
-  * CAPTCHAs (of any kind)
-  * Any other anti-robot or human-verification mechanisms, even if you are capable.
-* **Financial Transactions:**
-  * Completing any purchase.
-  * Managing or moving money (e.g., transfers, payments).
-  * Purchasing regulated goods or participating in gambling.
-* **Sending Communications:**
-  * Sending emails.
-  * Sending messages on any platform (e.g., social media, chat apps).
-  * Posting content on social media or forums.
-* **Accessing or Modifying Sensitive Information:**
-  * Health, financial, or government records (e.g., medical history, tax forms, passport status).
-  * Revealing or modifying sensitive personal identifiers (e.g., SSN, bank account number, credit card number).
-* **User Data Management:**
-  * Accessing, downloading, or saving files from the web.
-  * Sharing or sending files/data to any third party.
-  * Transferring user data between systems.
-* **Security and Identity:**
-  * Logging into any user account.
-  * Any action that involves misrepresentation or impersonation (e.g., creating a fan account, posting as someone else).
-
----
-
-## **RULE 2: Default Behavior (ACTUATE)**
-
-If an action does **NOT** fall under the conditions for `USER_CONFIRMATION`, your default behavior is to **Actuate**.
-
-**Actuation Means:** You MUST proactively perform all necessary steps to move the user's request forward. Continue to actuate until you either complete the non-consequential task or encounter a condition defined in Rule 1.
-
-* **Example 1:** If asked to send money, you will navigate to the payment portal, enter the recipient's details, and enter the amount. You will then **STOP** as per Rule 1 and ask for confirmation before clicking the final "Send" button.
-* **Example 2:** If asked to post a message, you will navigate to the site, open the post composition window, and write the full message. You will then **STOP** as per Rule 1 and ask for confirmation before clicking the final "Post" button.
-
-After the user has confirmed, remember to get the user's latest screen before continuing to perform actions.
-
-# Final Response Guidelines:
-Write final response to the user in the following cases:
-- User confirmation
-- When the task is complete or you have enough information to respond to the user
+**Default Rule:** When in doubt, scroll MORE rather than less. Better to scroll too much than miss content.
 """
 
 # Slack-specific instructions
@@ -98,43 +57,10 @@ HOW TO NAVIGATE IN SLACK (KEYBOARD-FIRST):
 6. AVOID clicking with mouse - use keyboard for safer navigation
 
 READING MESSAGES (READ-ONLY MODE):
-CRITICAL: When gathering information by scrolling, use READ-ONLY mode:
+When gathering information by scrolling:
 - ONLY scroll to read messages
-- Do NOT click on any links, images, or attachments
-- Do NOT click on user names or channels
+- Do NOT click on links, images, attachments, user names, or channels
 - Do NOT interact with any UI elements except scrolling
-- Your ONLY actions should be: scroll up, scroll down, read visible content
-
-AGGRESSIVE SCROLLING STRATEGY for gathering ALL messages:
-When asked to read/summarize ALL messages from a time period:
-
-1. SCROLL UP PHASE - Find the target marker (e.g., "Yesterday"):
-   - Use VERY LARGE scrolls: magnitude 1500-2000 (15-20 clicks)
-   - ONLY scroll UP - do NOT scroll down during this phase
-   - Keep scrolling UP repeatedly until you see the target marker
-   - If marker not found after 5 scrolls, INCREASE to magnitude 2000
-   - NEVER reduce magnitude or scroll back down
-   - Once you see the marker, STOP scrolling up immediately
-
-2. SCROLL DOWN PHASE - Read all messages:
-   - Start ONLY after you've found the marker in step 1
-   - Use VERY LARGE scrolls: magnitude 1500-2000 (15-20 clicks)
-   - Keep scrolling DOWN until "You're all caught up" appears
-   - NEVER reduce magnitude - stay at 1500-2000 throughout
-   - Read and note messages as you scroll down
-
-3. MAGNITUDE USAGE RULES:
-   - 1500-2000: For full channel scrolling (DEFAULT for "read all" tasks)
-   - 800-1000: Only if channel has very few messages
-   - 300-500: Only for fine positioning (NOT for full channel reading)
-   - 100-200: Never use for full channel tasks
-   - CRITICAL: NEVER decrease magnitude mid-scroll
-
-4. STRICT TWO-PHASE PROCESS:
-   - Phase 1: ONLY UP until marker found
-   - Phase 2: ONLY DOWN until caught up
-   - Do NOT mix directions or scroll back
-   - Do NOT click anything while scrolling
 """
 
 # Generic macOS instructions

@@ -17,7 +17,7 @@ class AgentConfig:
         verbose: Whether to print detailed output
         save_progress: Whether to save progress for recovery
         enable_thinking: Whether to include model's thinking process
-        include_safety_instructions: Whether to include safety system instructions
+        yolo_mode: Auto-approve all safety confirmations
         model_name: Gemini model to use
         temperature: Model temperature (0.0-1.0)
         excluded_functions: Functions to exclude from Computer Use
@@ -34,7 +34,6 @@ class AgentConfig:
     verbose: bool = True
     save_progress: bool = True
     enable_thinking: bool = False
-    include_safety_instructions: bool = False
     yolo_mode: bool = False  # Auto-approve all safety confirmations
     model_name: str = "gemini-2.5-computer-use-preview-10-2025"
     temperature: float = 0.1

@@ -14,50 +14,54 @@ export GEMINI_API_KEY='your-api-key'
 
 ## Usage
 
-After installation, use the `computer-agent` command:
+```bash
+# Basic usage (goals are auto-rewritten for better results)
+computer-agent --app slack "Find messages from John in engineering"
 
-### Slack Automation
+# YOLO mode (auto-approves all actions)
+computer-agent --yolo-mode --app chrome "Search for AI trends and summarize"
+
+# Skip goal rewriting
+computer-agent --no-rewrite --app finder "Create folder Projects"
+```
+
+### Examples
 
 ```bash
-# Search with Slack query language
-computer-agent --app slack "Find messages from:@john in:#engineering after:2025-01-01"
-
-# Summarize today's messages
+# Slack automation
 computer-agent --app slack "Summarize today's messages in #general"
-```
 
-### Generic macOS
+# Multi-app workflow  
+computer-agent --yolo-mode --app goal "Get AI trends from ChatGPT, send summary to John on Slack"
 
-```bash
-# Finder
-computer-agent --app finder "Create folder 'Projects' on Desktop"
-
-# Any app
+# Any macOS app
 computer-agent --app chrome "Search for Python tutorials"
-```
-
-### Alternative: Run as module
-
-```bash
-python -m computer_use_agent.cli --app slack "your goal"
 ```
 
 ### Options
 
 ```bash
---app APP                 # App name (default: Desktop Application)
---max-iterations N        # Max steps (default: 20)
---thinking                # Enable debug mode
---no-safety               # Disable safety checks (not recommended)
---quiet                   # Less output
+--app APP              # App name (default: Desktop Application)
+--yolo-mode            # Auto-approve all actions
+--no-rewrite           # Skip automatic goal rewriting
+--max-iterations N     # Max steps (default: 40)
+--thinking             # Show LLM reasoning
+--quiet                # Less output
 ```
 
 ## Architecture
 
 ```
 src/computer_use_agent/
-├── config/          # Settings & prompts
-├── actions/         # Desktop automation
-├── utils/           # Retry & response handling
-├── agent.py         # Core orchestrator
-└── cli.py           # CLI interface
+├── config/
+│   ├── prompts.py       # Scrolling + app-specific instructions
+│   └── settings.py      # Configuration dataclass
+├── actions/
+│   ├── executor.py      # Action execution (6x scroll multiplier)
+│   └── screen.py        # Screen capture & coordinate handling
+├── utils/
+│   ├── goal_rewriter.py # Auto goal optimization
+│   ├── retry.py         # API retry logic
+│   └── llm_logger.py    # Request/response logging
+├── agent.py             # Core orchestrator
+└── cli.py               # CLI interface

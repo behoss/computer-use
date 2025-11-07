@@ -11,7 +11,7 @@ from google.genai import types
 
 from .config import (
     AgentConfig,
-    SAFETY_SYSTEM_INSTRUCTIONS,
+    SCROLLING_INSTRUCTIONS,
     SLACK_INSTRUCTIONS,
     GENERIC_MACOS_INSTRUCTIONS,
 )
@@ -224,10 +224,8 @@ class ComputerUseAgent:
         Returns:
             Complete system instruction string
         """
-        instruction = GENERIC_MACOS_INSTRUCTIONS
-
-        if self.config.include_safety_instructions:
-            instruction = SAFETY_SYSTEM_INSTRUCTIONS + "\n\n" + instruction
+        # Start with scrolling instructions (universal for all apps)
+        instruction = SCROLLING_INSTRUCTIONS + "\n\n" + GENERIC_MACOS_INSTRUCTIONS
 
         if self.config.app_instructions:
             instruction += "\n\n" + self.config.app_instructions

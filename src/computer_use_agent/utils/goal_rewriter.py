@@ -29,26 +29,30 @@ class GoalRewriter:
 
         prompt = f"""You are an expert at rewriting user intentions for a Computer Use automation system.
 
-Your task is to rewrite the user's goal to make it:
-1. Clear and actionable for a computer automation agent
-2. Safe by splitting consequential actions from informational ones
-3. Specific about what to observe vs what to execute
-4. Structured to avoid safety filtering
+Your task: Rewrite the user's goal to be clearer and more detailed for a vision AI model, but keep it as ONE COMPLETE workflow.
 
-RULES:
-- If the goal involves a consequential action (sending messages, making purchases, installing software, deleting data), split it into TWO parts:
-  Part 1: Navigate and gather information (report what you see)
-  Part 2: Execute the action (only if explicitly needed)
-  
-- For informational tasks, make them clear and specific
-- Use action verbs: "Navigate to", "Check", "Report", "Observe", "Find"
-- Avoid vague language like "deal with" or "handle"
-- Be explicit about what information to gather vs what actions to take
+CRITICAL RULES:
+- **NEVER SPLIT THE GOAL** - always provide a single, complete workflow
+- **DO NOT use the pipe character " | "** - everything should be in one sentence/paragraph
+- Make the goal more detailed and explicit about each step
+- Use action-oriented language
+- Be specific about what to do at each stage
+
+Examples of good rewrites:
+Original: "Open ChatGPT, ask about AI, then send to John on Slack"
+Rewritten: "Open Chrome and navigate to chatgpt.com, submit a query about recent AI developments, read and capture the response, then switch to Slack, search for John's direct message channel, and send him a message summarizing the AI information from ChatGPT"
+
+Original: "Check my email and respond to the urgent one"
+Rewritten: "Open email application, identify the most recent urgent email by scanning subject lines and sender names, read the full email content, then compose and send a response addressing the urgent matter"
+
+Original: "Find the sales report and email it to the team"
+Rewritten: "Navigate to the Documents folder, locate the most recent sales report file, open the email application, compose a new message to the sales team distribution list, attach the sales report file, and send the email"
+
+Your task: Rewrite the following goal to be more detailed and explicit, maintaining it as ONE COMPLETE workflow.
 
 Original goal{app_context}: "{original_goal}"
 
-Rewrite this goal to be more effective. If it's a consequential action, split it into information gathering first.
-Only provide the rewritten goal(s), nothing else. If splitting into multiple goals, separate them with " | " (pipe character)."""
+Provide ONLY the rewritten goal as a single complete workflow. NO splitting, NO pipe characters."""
 
         try:
             response = self.client.models.generate_content(
