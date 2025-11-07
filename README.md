@@ -57,7 +57,7 @@ src/computer_use_agent/
 │   ├── prompts.py       # Scrolling + app-specific instructions
 │   └── settings.py      # Configuration dataclass
 ├── actions/
-│   ├── executor.py      # Action execution (6x scroll multiplier)
+│   ├── executor.py      # Action execution (3x scroll multiplier)
 │   └── screen.py        # Screen capture & coordinate handling
 ├── utils/
 │   ├── goal_rewriter.py # Auto goal optimization

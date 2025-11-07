@@ -234,10 +234,10 @@ class ActionExecutor:
         direction = args.get("direction", "down")
         magnitude = args.get("magnitude", 300)
 
-        # AUTO-6X MAGNITUDE: Make scrolling 6x more aggressive
-        # LLM tends to be conservative with scroll amounts, so we multiply by 6
+        # AUTO-3X MAGNITUDE: Make scrolling 3x more aggressive
+        # LLM tends to be conservative with scroll amounts, so we triple it
         # to ensure sufficient coverage when reading all messages in a channel
-        magnitude = magnitude * 6
+        magnitude = magnitude * 3
 
         # macOS has a practical maximum of ~5 clicks per scroll call
         # For larger scrolls, use multiple scroll operations
@@ -281,10 +281,10 @@ class ActionExecutor:
         direction = args.get("direction", "down")
         magnitude = args.get("magnitude", 800)
 
-        # AUTO-6X MAGNITUDE: Make scrolling 6x more aggressive
-        # LLM tends to be conservative with scroll amounts, so we multiply by 6
+        # AUTO-3X MAGNITUDE: Make scrolling 3x more aggressive
+        # LLM tends to be conservative with scroll amounts, so we triple it
         # to ensure sufficient coverage when reading all messages in a channel
-        magnitude = magnitude * 6
+        magnitude = magnitude * 3
 
         # macOS has a practical maximum of ~5 clicks per scroll call
         # For larger scrolls, use multiple scroll operations
