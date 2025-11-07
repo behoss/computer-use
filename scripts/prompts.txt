@@ -1,0 +1,8 @@
+computer-agent --yolo-mode --app goal "Navigate to System Settings > Software Update and report if updates are available"
+
+computer-agent --yolo-mode --app goal "Click Install Now to proceed with update"
+
+computer-agent --yolo-mode --app goal "Open ExpressVPN and connect. Then open an incognito window in Brave Browser"
+
+computer-agent --yolo-mode --app goal "On Chrome open chat.openai.com and start asking it to roleplay with you an interview. Then engage in a conversation asking and answering questions together." 
+

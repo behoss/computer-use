@@ -12,7 +12,6 @@ from google.genai import types
 from .config import (
     AgentConfig,
     SCROLLING_INSTRUCTIONS,
-    SLACK_INSTRUCTIONS,
     GENERIC_MACOS_INSTRUCTIONS,
 )
 from .actions import ActionExecutor, ScreenManager

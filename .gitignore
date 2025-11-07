@@ -45,7 +45,6 @@ env/
 # Project specific
 .agent_progress.txt
 *.log
-scripts/
 logs/
 
 # uv

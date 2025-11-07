@@ -20,49 +20,6 @@ Never reduce magnitude mid-scroll
 **Default Rule:** When in doubt, scroll MORE rather than less. Better to scroll too much than miss content.
 """
 
-# Slack-specific instructions
-SLACK_INSTRUCTIONS = """
-SLACK-SPECIFIC FEATURES:
-- Slack is a desktop application (not a web browser)
-- Do NOT try to open a web browser or navigate to URLs
-- IMPORTANT: Slack is ALREADY OPEN and FOCUSED - do NOT use command+tab to switch apps
-- Only use command+tab if you explicitly need to switch TO Slack from another app
-
-SLACK KEYBOARD SHORTCUTS (macOS):
-- Search/jump to channel or person: command+k
-- Direct messages: command+shift+k
-- Search within current channel/DM: command+f
-- All unreads: command+shift+a
-- Threads: command+shift+t
-- Arrow keys: Navigate search results
-- Enter/Return: Select highlighted result
-
-SLACK SEARCH QUERY LANGUAGE:
-- Use command+k to open quick switcher for channels/people
-- When searching in Slack, you can use:
-  * from:@username - messages from specific user
-  * in:#channel - messages in specific channel
-  * on:YYYY-MM-DD or after:YYYY-MM-DD or before:YYYY-MM-DD - date filters
-  * has:link, has:file, has:pin - content filters
-  * Examples:
-    - "from:@john in:#general after:2025-01-01 has:link" - Links from John in #general after Jan 1
-    - "security bug in:#engineering on:2025-01-15" - Messages about security bug on specific date
-
-HOW TO NAVIGATE IN SLACK (KEYBOARD-FIRST):
-1. Press command+k to open search/switcher
-2. IMPORTANT: Search bar is AUTO-FOCUSED after command+k - NO NEED to click on it
-3. Simply type channel name (e.g., "#general") or person's name
-4. Use arrow keys to navigate results
-5. Press Enter to select
-6. AVOID clicking with mouse - use keyboard for safer navigation
-
-READING MESSAGES (READ-ONLY MODE):
-When gathering information by scrolling:
-- ONLY scroll to read messages
-- Do NOT click on links, images, attachments, user names, or channels
-- Do NOT interact with any UI elements except scrolling
-"""
-
 # Generic macOS instructions
 GENERIC_MACOS_INSTRUCTIONS = """
 GENERAL macOS DESKTOP CONTROL:
@@ -83,16 +40,43 @@ KEYBOARD SHORTCUTS (macOS):
 - Quit app: command+q
 - Switch apps: command+tab
 
-SPOTLIGHT SEARCH (macOS):
-- Open Spotlight: command+space
-- CRITICAL: After typing app name in Spotlight, press ENTER to launch (DO NOT click)
-- The search results auto-focus, so simply type the app name and press Enter
-- NEVER click on Spotlight results - always press Enter instead
-- Example workflow:
-  1. Press command+space
-  2. Type "ExpressVPN"
-  3. Press Enter (NOT click)
-- This is more reliable than clicking and prevents focus issues
+KEYBOARD-FIRST INTERACTION (CRITICAL):
+- **ALWAYS prioritize keyboard shortcuts over mouse clicking**
+- Only use mouse when keyboard shortcuts are not available or practical
+- This is ESPECIALLY important in: Slack, Linear, VSCode, terminal applications
+- Benefits: Faster, more reliable, prevents focus issues and accidental clicks
+- Common pattern: Keyboard shortcut → Type → Return (not click)
+- Examples:
+  * Slack: command+k → type channel → Return (NOT clicking on result)
+  * Linear: command+k → type issue ID → Return (NOT clicking)
+  * Spotlight: command+space → type app → Return (NOT clicking)
+  * VSCode: command+p → type filename → Return (NOT clicking)
+  * Sending messages: Type message → Return (NOT clicking send button)
+  * Search: Type query → Return (NOT clicking search button)
+
+INPUT FIELD SUBMISSION & SPOTLIGHT SEARCH:
+- CRITICAL: When typing in ANY input field, ALWAYS try pressing Return/Enter to submit FIRST
+- Only use click or other methods if Return/Enter doesn't work
+- Return/Enter is more reliable, faster, and prevents focus issues
+
+This applies to ALL input fields:
+  * Spotlight search bar (command+space then type then Return)
+  * Slack search (command+k then type then Return)
+  * Slack message composition (type then Return to send)
+  * Cline input box (type then Return)
+  * Browser address bars, search boxes, forms
+  * Any text input fields
+
+Spotlight Search Workflow (macOS):
+  1. Press command+space (opens Spotlight)
+  2. Type app name (e.g., "ExpressVPN") - search bar is auto-focused
+  3. Press Return to launch (DO NOT click on results)
+  4. NEVER click on Spotlight results - always use Return/Enter
+
+General Input Field Workflow:
+  1. Focus input field (keyboard shortcut or click)
+  2. Type your text
+  3. Press Return to submit (DO NOT click submit buttons)
 
 COOKIE CONSENT & PRIVACY DIALOGS:
 - ALWAYS automatically reject cookies when encountering consent dialogs
@@ -136,4 +120,19 @@ INTERACTION TIPS:
 - Complete tasks step by step
 - If a keyboard shortcut doesn't work, try clicking on the UI element instead
 - Pay attention to visual feedback from the application
+
+TERMINAL AUTOSUGGESTIONS (oh-my-zsh):
+- The terminal may show faint gray text suggestions as you type
+- These are AUTOSUGGESTIONS, not real text - they are just guides
+- Do NOT try to delete or interact with these suggestions
+- Safe to completely ignore them - continue typing or pasting as normal
+- Example: You type "git" and see faint "git checkout main" - just keep typing what you need
+- The faint text will disappear/update as you continue typing
+
+CLINE (VSCode AI Assistant):
+- When Cline is actively coding or responding, the button at the top shows "Cancel"
+- When Cline finishes and the task is complete, the button changes to "Start New Task"
+- ALWAYS wait until the button changes from "Cancel" to "Start New Task" before proceeding
+- This is the reliable indicator that Cline has fully completed its response
+- Do NOT interrupt while button shows "Cancel" - Cline is still working
 """

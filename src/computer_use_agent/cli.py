@@ -9,7 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from .agent import ComputerUseAgent
-from .config import AgentConfig, SLACK_INSTRUCTIONS
+from .config import AgentConfig
 from .utils import rewrite_goal
 
 logger = logging.getLogger(__name__)
@@ -25,31 +25,26 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Slack automation with search query language
-  %(prog)s --app slack "Search for messages from:@john in:#engineering after:2025-01-01 has:link"
+  # Slack automation
+  %(prog)s "Search for messages from:@john in:#engineering after:2025-01-01 has:link in Slack"
   
   # Generic macOS automation
-  %(prog)s --app finder "Create a new folder called 'Projects' on Desktop"
-  %(prog)s --app chrome "Search for Python tutorials"
+  %(prog)s "Create a new folder called 'Projects' on Desktop"
+  %(prog)s "Search for Python tutorials in Chrome"
   
   # With thinking enabled for debugging
-  %(prog)s --app slack --thinking "Find and summarize today's messages"
+  %(prog)s --thinking "Find and summarize today's messages in Slack"
   
   # Custom instructions
-  %(prog)s --app myapp --instructions "Use F5 to refresh" "Open the dashboard"
+  %(prog)s --instructions "Use F5 to refresh" "Open the dashboard"
         """,
     )
 
     parser.add_argument("goal", help="What you want to achieve")
     parser.add_argument(
-        "--app",
-        default="Desktop Application",
-        help="Application name (default: Desktop Application)",
-    )
-    parser.add_argument(
         "--instructions",
         default="",
-        help="Custom app-specific instructions",
+        help="Custom app-specific instructions (optional)",
     )
     parser.add_argument(
         "--max-iterations",
@@ -85,18 +80,16 @@ Examples:
         print("  export GEMINI_API_KEY='your-api-key-here'")
         sys.exit(1)
 
-    # Use built-in Slack instructions if app is Slack
+    # Use custom app-specific instructions if provided
     app_instructions = args.instructions
-    if args.app.lower() == "slack" and not args.instructions:
-        app_instructions = SLACK_INSTRUCTIONS
 
     # Rewrite goal by default (unless --no-rewrite is specified)
     final_goal = args.goal
     original_goal = ""
     if not args.no_rewrite:
-        print("\n🔄 Rewriting goal with Gemini 2.5 Flash...")
+        print("\n🔄 Rewriting goal with Gemini 2.5 Pro...")
         print(f"📝 Original: {args.goal}")
-        rewritten = rewrite_goal(args.goal, args.app)
+        rewritten = rewrite_goal(args.goal)
         print(f"✨ Rewritten: {rewritten}\n")
         final_goal = rewritten
         original_goal = args.goal
@@ -111,7 +104,6 @@ Examples:
     config = AgentConfig(
         goal=final_goal,
         original_goal=original_goal,
-        app_name=args.app,
         app_instructions=app_instructions,
         max_iterations=args.max_iterations,
         verbose=not args.quiet,
