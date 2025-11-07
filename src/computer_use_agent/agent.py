@@ -78,7 +78,15 @@ class ComputerUseAgent:
             True if successful, False otherwise
         """
         print(f"\n{'=' * 60}")
-        print(f"🎯 GOAL: {self.config.goal}")
+        if self.config.original_goal:
+            print(f"📝 ORIGINAL GOAL: {self.config.original_goal}")
+            print(f"🎯 REWRITTEN GOAL: {self.config.goal}")
+            # Log goal rewrite to file
+            self.llm_logger.log_goal_rewrite(
+                self.config.original_goal, self.config.goal
+            )
+        else:
+            print(f"🎯 GOAL: {self.config.goal}")
         print(f"📱 APP: {self.config.app_name}")
         print(f"📋 LLM LOG: {self.llm_logger.get_log_path()}")
         print(f"{'=' * 60}\n")
@@ -129,7 +137,22 @@ class ComputerUseAgent:
             print("🤔 Analyzing screen and planning next action...")
             response = self._call_model_with_retry(contents, model_config, iteration)
 
-            if not response or not response.candidates:
+            if not response:
+                print("❌ Model returned no response object")
+                self.llm_logger.log_error(
+                    iteration + 1, "No response object from model"
+                )
+                return False
+
+            if not response.candidates:
+                print("❌ Model returned no candidates")
+                print(f"   Response object: {response}")
+                if hasattr(response, "prompt_feedback"):
+                    print(f"   Prompt feedback: {response.prompt_feedback}")
+                self.llm_logger.log_error(
+                    iteration + 1,
+                    f"No candidates in response. Prompt feedback: {getattr(response, 'prompt_feedback', 'N/A')}",
+                )
                 return False
 
             candidate = response.candidates[0]
@@ -150,7 +173,7 @@ class ComputerUseAgent:
             # Execute function calls
             print("⚙️  Executing actions...")
             results, should_terminate = self.executor.execute_function_calls(
-                candidate, get_safety_confirmation
+                candidate, lambda sd: get_safety_confirmation(sd, self.config.yolo_mode)
             )
 
             if should_terminate:

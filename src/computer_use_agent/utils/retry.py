@@ -90,9 +90,18 @@ class RetryableAPICall:
         """
         error_msg = str(error)
 
-        # Check for 503/UNAVAILABLE/Deadline errors
+        # Check for 503/UNAVAILABLE/Deadline/Connection errors
         if any(
-            x in error_msg for x in ["503", "UNAVAILABLE", "Deadline", "unavailable"]
+            x in error_msg
+            for x in [
+                "503",
+                "UNAVAILABLE",
+                "Deadline",
+                "unavailable",
+                "disconnected",
+                "connection",
+                "Connection",
+            ]
         ):
             if self.on_503_callback:
                 self.on_503_callback(self.retry_count, self.delay)

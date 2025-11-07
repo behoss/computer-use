@@ -81,6 +81,21 @@ class LLMLogger:
         }
         self._write_log(log_entry)
 
+    def log_goal_rewrite(self, original_goal: str, rewritten_goal: str) -> None:
+        """Log goal rewriting information.
+
+        Args:
+            original_goal: Original user goal
+            rewritten_goal: Rewritten goal
+        """
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "type": "goal_rewrite",
+            "original_goal": original_goal,
+            "rewritten_goal": rewritten_goal,
+        }
+        self._write_log(log_entry)
+
     def _write_log(self, entry: Dict[str, Any]) -> None:
         """Write log entry to file.
 

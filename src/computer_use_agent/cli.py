@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from .agent import ComputerUseAgent
 from .config import AgentConfig, SLACK_INSTRUCTIONS
+from .utils import rewrite_goal
 
 logger = logging.getLogger(__name__)
 
@@ -63,9 +64,14 @@ Examples:
         help="Enable thinking mode for debugging",
     )
     parser.add_argument(
-        "--safety",
+        "--yolo-mode",
         action="store_true",
-        help="Enable safety instructions (off by default)",
+        help="⚠️  YOLO MODE: Auto-approve ALL actions without confirmation (use at your own risk!)",
+    )
+    parser.add_argument(
+        "--rewrite-goal",
+        action="store_true",
+        help="Use Gemini 2.5 Flash to automatically rewrite the goal for better results",
     )
 
     args = parser.parse_args()
@@ -84,15 +90,46 @@ Examples:
     if args.app.lower() == "slack" and not args.instructions:
         app_instructions = SLACK_INSTRUCTIONS
 
+    # Rewrite goal if requested
+    final_goal = args.goal
+    original_goal = ""
+    if args.rewrite_goal:
+        print("\n🔄 Rewriting goal with Gemini 2.5 Flash...")
+        print(f"📝 Original: {args.goal}")
+        rewritten = rewrite_goal(args.goal, args.app)
+
+        # Handle multi-part goals (split by |)
+        if " | " in rewritten:
+            goals = [g.strip() for g in rewritten.split(" | ")]
+            print(f"\n✨ Rewritten into {len(goals)} parts:")
+            for i, goal in enumerate(goals, 1):
+                print(f"   Part {i}: {goal}")
+            final_goal = goals[0]  # Use first part
+            original_goal = args.goal  # Save original
+            print(f"\n▶️  Executing Part 1: {final_goal}")
+            if len(goals) > 1:
+                print(f"   (Part 2 will need to be run separately)")
+        else:
+            print(f"✨ Rewritten: {rewritten}\n")
+            final_goal = rewritten
+            original_goal = args.goal  # Save original
+
+    # Show YOLO mode warning if enabled
+    if args.yolo_mode:
+        termcolor.cprint("\n⚠️  YOLO MODE ENABLED ⚠️", "yellow", attrs=["bold"])
+        termcolor.cprint("All safety confirmations will be AUTO-APPROVED!", "yellow")
+        termcolor.cprint("You take full responsibility for all actions.\n", "yellow")
+
     # Create configuration
     config = AgentConfig(
-        goal=args.goal,
+        goal=final_goal,
+        original_goal=original_goal,
         app_name=args.app,
         app_instructions=app_instructions,
         max_iterations=args.max_iterations,
         verbose=not args.quiet,
         enable_thinking=args.thinking,
-        include_safety_instructions=args.safety,
+        yolo_mode=args.yolo_mode,
     )
 
     try:

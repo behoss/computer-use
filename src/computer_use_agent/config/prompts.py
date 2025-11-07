@@ -157,6 +157,17 @@ KEYBOARD SHORTCUTS (macOS):
 - Quit app: command+q
 - Switch apps: command+tab
 
+SPOTLIGHT SEARCH (macOS):
+- Open Spotlight: command+space
+- CRITICAL: After typing app name in Spotlight, press ENTER to launch (DO NOT click)
+- The search results auto-focus, so simply type the app name and press Enter
+- NEVER click on Spotlight results - always press Enter instead
+- Example workflow:
+  1. Press command+space
+  2. Type "ExpressVPN"
+  3. Press Enter (NOT click)
+- This is more reliable than clicking and prevents focus issues
+
 COOKIE CONSENT & PRIVACY DIALOGS:
 - ALWAYS automatically reject cookies when encountering consent dialogs
 - Click "Reject All", "Reject Cookies", or similar options WITHOUT asking for confirmation

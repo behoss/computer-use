@@ -372,14 +372,18 @@ class ActionExecutor:
         return {"status": "not_applicable", "message": "Desktop app context"}
 
 
-def get_safety_confirmation(safety_decision: Dict[str, Any]) -> str:
+def get_safety_confirmation(
+    safety_decision: Dict[str, Any], yolo_mode: bool = False
+) -> str:
     """Prompt user for confirmation when safety check is triggered.
 
     Implements intelligent auto-approval for routine operations while
     requiring user confirmation for consequential actions.
+    In YOLO mode, all confirmations are automatically approved.
 
     Args:
         safety_decision: Safety decision dictionary from model
+        yolo_mode: If True, auto-approve everything without asking
 
     Returns:
         "CONTINUE" or "TERMINATE"
@@ -424,6 +428,15 @@ def get_safety_confirmation(safety_decision: Dict[str, Any]) -> str:
     if any(keyword in explanation for keyword in routine_keywords):
         print(
             f"🟢 Auto-approved routine action: {safety_decision.get('explanation', '')}"
+        )
+        return "CONTINUE"
+
+    # YOLO MODE: Auto-approve everything with sound notification
+    if yolo_mode:
+        play_sound("Purr")  # Different sound for YOLO auto-approvals
+        termcolor.cprint(
+            f"🚀 YOLO MODE: Auto-approved: {safety_decision.get('explanation', 'No explanation')}",
+            "yellow",
         )
         return "CONTINUE"
 

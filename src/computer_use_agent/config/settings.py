@@ -27,6 +27,7 @@ class AgentConfig:
     """
 
     goal: str
+    original_goal: str = ""  # Set if goal was rewritten
     app_name: str = "Desktop Application"
     app_instructions: str = ""
     max_iterations: int = 40
@@ -34,6 +35,7 @@ class AgentConfig:
     save_progress: bool = True
     enable_thinking: bool = False
     include_safety_instructions: bool = False
+    yolo_mode: bool = False  # Auto-approve all safety confirmations
     model_name: str = "gemini-2.5-computer-use-preview-10-2025"
     temperature: float = 0.1
     excluded_functions: List[str] = field(
