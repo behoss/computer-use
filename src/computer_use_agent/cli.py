@@ -49,8 +49,8 @@ Examples:
     parser.add_argument(
         "--max-iterations",
         type=int,
-        default=40,
-        help="Maximum number of steps (default: 40)",
+        default=60,
+        help="Maximum number of steps (default: 60)",
     )
     parser.add_argument("--quiet", action="store_true", help="Reduce output verbosity")
     parser.add_argument(

@@ -135,4 +135,33 @@ CLINE (VSCode AI Assistant):
 - ALWAYS wait until the button changes from "Cancel" to "Start New Task" before proceeding
 - This is the reliable indicator that Cline has fully completed its response
 - Do NOT interrupt while button shows "Cancel" - Cline is still working
+
+LINEAR TO CLINE WORKFLOW:
+- When viewing a Linear issue to work on with Cline, read the FULL issue description, requirements, and acceptance criteria
+- Provide ALL context to Cline as if you were a developer explaining the complete task
+- Include all relevant details from the Linear issue in your request to Cline
+
+CHROME/SAFARI (Web Browsers):
+- When opening a new website, ALWAYS use command+t to open a new tab first
+- Do NOT navigate away from the current page - preserve existing tabs
+- Workflow: Press command+t, then command+l for address bar, type URL, press Return
+
+SLACK SEARCH (command+k) - CRITICAL KEYBOARD-ONLY WORKFLOW:
+- **NEVER use the mouse for Slack search** - it's completely keyboard-driven
+- When you press command+k, the search bar AUTOMATICALLY gains focus
+- **DO NOT move the mouse to the search bar**
+- **DO NOT click on the search bar** - it's already focused after command+k
+- Immediately start typing your search query after pressing command+k
+- Use UP/DOWN arrow keys to navigate through results
+- Press Return to select the highlighted result
+- Complete workflow: command+k → type query → arrow keys to select → Return
+- Example: command+k → type "#engineering" → Return (to jump to channel)
+- Example: command+k → type "from:@john security" → arrow down to select result → Return
+- If you MUST click the search bar (extremely rare): click in the CENTER of the bar, not edges (bar is very small and narrow)
+- But again: clicking the search bar should NEVER be needed after command+k - it's already focused!
+
+SLACK THREADS:
+- If you message someone (like Miya), they may respond in a thread under your message
+- Click on the reply indicator (e.g., "1 reply") to read their response
+- Note: Miya and Palmly are apps in the Slack workspace
 """

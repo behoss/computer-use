@@ -30,7 +30,7 @@ class AgentConfig:
     original_goal: str = ""  # Set if goal was rewritten
     app_name: str = "Desktop Application"
     app_instructions: str = ""
-    max_iterations: int = 40
+    max_iterations: int = 60
     verbose: bool = True
     save_progress: bool = True
     enable_thinking: bool = False

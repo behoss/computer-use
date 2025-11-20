@@ -43,8 +43,13 @@ APP-SPECIFIC CONTEXT TO INJECT INLINE (Recommendations - add more as needed):
 Slack:
 - Shortcuts: command+k (search/jump), command+shift+k (DMs), command+f (search in channel), command+shift+a (unreads), command+shift+t (threads)
 - Search syntax: from:@username, in:#channel, on:YYYY-MM-DD, after:/before:YYYY-MM-DD, has:link/file/pin
-- Tips: Search bar auto-focuses after command+k, use arrow keys to navigate results, press Return to select
-- Navigation: KEYBOARD-FIRST - avoid clicking, use command+k then type then Return
+- CRITICAL: NEVER use mouse for Slack search - it's completely keyboard-driven
+- Auto-focus: command+k AUTOMATICALLY focuses search bar - DO NOT move mouse to it, DO NOT click on it
+- After command+k, immediately start typing (search bar is already focused)
+- Navigate results: Use UP/DOWN arrow keys only (not mouse)
+- Select result: Press Return (not mouse click)
+- Complete workflow: command+k → type query → arrow keys to navigate → Return to select
+- If clicking search bar is absolutely necessary (extremely rare): click CENTER of bar, not edges (bar is very narrow)
 - Reading mode: When scrolling to read, do NOT click on links/images/attachments/usernames
 
 Linear:
@@ -52,6 +57,7 @@ Linear:
 - Issue format: Issues have IDs like "ENG-123" for precise navigation
 - Git workflow: After copying branch name with command+shift+., switch to VSCode (command+tab), toggle terminal (command+j), type 'git checkout -b ', paste with command+v, press Return
 - Navigation: Use command+k then type issue ID then Return (keyboard-first)
+- Linear to Cline workflow: When viewing a Linear issue to work on, read the FULL issue description, requirements, and acceptance criteria, then explain ALL of this context to Cline as if you were a developer providing complete context for the task
 
 VSCode:
 - Shortcuts: command+p (quick open file), command+j (toggle terminal), command+shift+p (command palette), command+` (toggle terminal alt)
@@ -66,6 +72,13 @@ Cline (VSCode AI Assistant):
 - Completion check: ALWAYS wait until button changes from "Cancel" to "Start New Task" before proceeding
 - Submission: Type request, press Return (do NOT click send button)
 - Patience: Do NOT assume it's stuck - it's processing
+
+Chrome/Safari (Web Browsers):
+- New tab: command+t (ALWAYS open new websites in a new tab rather than navigating away from current page)
+- Close tab: command+w
+- Switch tabs: command+shift+[ or command+shift+]
+- Address bar: command+l
+- Workflow: When opening a new website, press command+t first to open new tab, then type URL
 
 General macOS:
 - Spotlight: command+space then type app name then Return (NEVER click results)
